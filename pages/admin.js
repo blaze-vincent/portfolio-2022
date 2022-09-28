@@ -1,11 +1,23 @@
 import cookieIsValid from "../utils/cookieIsValid";
-import getSession from "../utils/getSession";
+import sessionIsAuthenticated from "../utils/sessionIsAuthenticated";
 
 export async function getServerSideProps(ctx){
+  const unauthorized = {
+    redirect: {
+      destination: '/',
+      permanent: false
+    }
+  }
+
   const cookie = ctx.req.cookies['connect.sid'];
 
   if(!cookie){
-    //handle no cookie
+    return unauthorized
+  }
+  
+  const cookieRegex = /s%.*\./i;
+  if(!cookieRegex.test(cookie)){
+    return unauthorized
   }
 
   const cookieComponents = cookie.split(':')[1].split('.');
@@ -14,20 +26,23 @@ export async function getServerSideProps(ctx){
 
   if(!cookieIsValid(sid, signature)){
     //cookie signature is invalid - hijacking likely
+    return unauthorized
   }
 
-  //check store for session matching sid
-  getSession(sid);
-
-  return {
-    props: {
-
+  if(sessionIsAuthenticated(sid)){
+    return {
+      props: {
+        authenticated: true
+      }
     }
   }
+
+  return unauthorized
+
 }
 
-export default function Admin({}){
-  return <div>
+export default function Admin({authenticated}){
+  return authenticated && <div>
     this is the admin page
   </div>
 }
