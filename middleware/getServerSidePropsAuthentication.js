@@ -1,7 +1,7 @@
 import cookieIsValid from "../utils/cookieIsValid";
 import sessionIsAuthenticated from "../utils/sessionIsAuthenticated";
 
-export default function getServerSidePropsAuthentication(cookie){
+export default function getServerSidePropsAuthentication({cookie, authFailRoute}){
   //abstract methods performed in getserverside props on /admin
   const cookieRegex = /s:.*\..*/i;
   if(cookieRegex.test(cookie)){
@@ -22,7 +22,7 @@ export default function getServerSidePropsAuthentication(cookie){
 
   return {
     redirect: {
-      destination: '/',
+      destination: authFailRoute || '/',
       permanent: false
     }
   }
