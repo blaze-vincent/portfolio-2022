@@ -1,4 +1,4 @@
-import getServerSidePropsAuthentication from "../middleware/getServerSidePropsAuthentication";
+import getServerSidePropsAuthentication from "../../middleware/getServerSidePropsAuthentication";
 
 export async function getServerSideProps(ctx){
   return getServerSidePropsAuthentication(ctx.req.cookies['connect.sid']);
