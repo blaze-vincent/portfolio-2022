@@ -1,7 +1,10 @@
 import getServerSidePropsAuthentication from "../../middleware/getServerSidePropsAuthentication";
 
 export async function getServerSideProps(ctx){
-  return getServerSidePropsAuthentication(ctx.req.cookies['connect.sid']);
+  return getServerSidePropsAuthentication({
+    cookie: ctx.req.cookies['connect.sid'], 
+    authFailRoute: '/admin/login'
+  });
 }
 
 export default function Admin({authenticated}){
