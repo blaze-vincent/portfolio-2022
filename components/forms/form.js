@@ -2,9 +2,9 @@ import { useState } from "react";
 import Response from "./response";
 
 //todo: test array in response
-export default function Form({action, method='POST', children}){
+export default function Form({action, method='POST', children, className}){
   const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null)
+  const [success, setSuccess] = useState(null);
 
   const responseCleanup = resSetter => {
     return _ => {
@@ -47,6 +47,7 @@ export default function Form({action, method='POST', children}){
   }
 
   return <form
+    className={className}
     onSubmit={submit}
   >
     {children}
