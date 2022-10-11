@@ -17,6 +17,10 @@ const handler = nextConnect()
     password
   } = req.body;
 
+  if(!username || !password){
+    return res.status(400).json({error: 'Username and password are required fields.'})
+  }
+
   const account = await Account.findOne({username});
 
   if(!account){
