@@ -1,4 +1,17 @@
+import { useState } from "react";
+import Response from "./response";
+
+//todo: test array in response
 export default function Form({action, method='POST', children}){
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null)
+
+  const responseCleanup = resSetter => {
+    return _ => {
+      resSetter(null)
+    }
+  }
+  
   const submit = e => {
     e.preventDefault();
     const responses = Array.from(e.target.elements)
@@ -16,10 +29,20 @@ export default function Form({action, method='POST', children}){
       credentials: "same-origin",
       body,
       method
-    }).then(res => {
-      return res.json()
-    }).then(async res => {
-      console.log(await res)
+    })
+    .then(res => res.json())
+    .then(res => {
+      if(res.error){
+        throw new Error(res.error)
+      }
+
+      const data = Object.entries(res).map(obj => {
+        return `${obj[0]}: ${obj[1]}`
+      }).join('; ')
+
+      setSuccess(data)
+    }).catch(err => {
+      setError(err.message)
     })
   }
 
@@ -27,5 +50,15 @@ export default function Form({action, method='POST', children}){
     onSubmit={submit}
   >
     {children}
+    {
+      error && <Response success={false} cleanup={responseCleanup(setError)}>
+        {error}
+      </Response>
+    }
+    {
+      success && <Response cleanup={responseCleanup(setSuccess)}>
+        {success}
+      </Response>
+    }
   </form>
 }
