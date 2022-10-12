@@ -12,8 +12,6 @@ export default function AdminLogin(){
         Password:
       </label>
       <input id='password' name='password' type='password' />
-
-      <button type='submit'>Submit</button>
     </Form>
   </div>
 }
